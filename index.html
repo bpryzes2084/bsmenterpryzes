@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSM Enterpryzes — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ec;
+    --gold: #c8a84b;
+    --gold-light: #e8c96a;
+    --gold-dim: rgba(200, 168, 75, 0.15);
+    --rule: rgba(200, 168, 75, 0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+    opacity: 0.6;
+  }
+  .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--gold-light); opacity: 1; }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.5;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s, background 0.4s;
+  }
+  header.scrolled {
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-color: var(--rule);
+  }
+
+  .logo-mark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .logo-bsm {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+  }
+  .logo-sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+    margin-top: 2px;
+  }
+
+  nav {
+    display: flex;
+    gap: 36px;
+    align-items: center;
+  }
+  nav a {
+    color: rgba(245,242,236,0.5);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--gold); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 30%, rgba(200,168,75,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(200,168,75,0.04) 0%, transparent 50%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,168,75,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,168,75,0.05) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  }
+
+  .hero-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 13vw, 14rem);
+    line-height: 0.88;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s forwards;
+  }
+  .hero-title span {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(245,242,236,0.2);
+  }
+  .hero-title em {
+    display: block;
+    font-style: normal;
+    color: var(--white);
+  }
+  .hero-title .gold { color: var(--gold); -webkit-text-stroke: 0; }
+
+  .hero-desc {
+    max-width: 480px;
+    margin-top: 32px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(245,242,236,0.55);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+
+  .hero-count {
+    position: absolute;
+    right: 48px;
+    bottom: 80px;
+    text-align: right;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+  }
+  .hero-count .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gold);
+    line-height: 1;
+  }
+  .hero-count .num-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.35);
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 48px;
+    opacity: 0.35;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-head {
+    padding: 80px 48px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .section-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ─── PROPERTIES GRID ─── */
+  .properties {
+    padding: 0 48px 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .prop-card {
+    background: var(--black);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .prop-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold-dim);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .prop-card:hover { background: #0f0f0f; }
+  .prop-card:hover::before { opacity: 1; }
+
+  .prop-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: rgba(200,168,75,0.35);
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .prop-icon {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    position: relative;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .prop-card:hover .prop-icon { transform: scale(1.1); }
+
+  .prop-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--white);
+    position: relative;
+  }
+  .prop-name .accent { color: var(--gold); }
+
+  .prop-url {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    color: rgba(200,168,75,0.6);
+    text-transform: lowercase;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .prop-desc {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: rgba(245,242,236,0.45);
+    position: relative;
+  }
+
+  .prop-tag {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 5px 14px;
+    border: 1px solid rgba(200,168,75,0.25);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(200,168,75,0.5);
+    position: relative;
+    transition: all 0.3s;
+  }
+  .prop-card:hover .prop-tag {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .prop-arrow {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(200,168,75,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 0.85rem;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s;
+  }
+  .prop-card:hover .prop-arrow { opacity: 1; transform: translateX(0); }
+
+  /* Featured card spans 2 columns */
+  .prop-card.featured {
+    grid-column: span 2;
+  }
+  .prop-card.featured .prop-name { font-size: 3.2rem; }
+
+  /* ─── STATS STRIP ─── */
+  .stats {
+    padding: 64px 48px;
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .stat {
+    flex: 1;
+    padding: 0 40px;
+    border-right: 1px solid var(--rule);
+  }
+  .stat:first-child { padding-left: 0; }
+  .stat:last-child { border-right: none; }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.35);
+    margin-top: 6px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 56px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    letter-spacing: 0.1em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,168,75,0.2);
+    line-height: 1;
+  }
+  .footer-sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.2);
+    margin-top: 4px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .footer-links a {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: rgba(245,242,236,0.25);
+    text-decoration: none;
+    transition: color 0.2s;
+    text-transform: lowercase;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-copy {
+    font-size: 0.6rem;
+    color: rgba(245,242,236,0.15);
+    letter-spacing: 0.15em;
+    margin-top: 16px;
+    text-align: right;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    header { padding: 20px 24px; }
+    nav { display: none; }
+    .hero { padding: 0 24px 60px; }
+    .hero-count { right: 24px; bottom: 60px; }
+    .properties {
+      grid-template-columns: 1fr;
+      padding: 0 24px 60px;
+    }
+    .prop-card.featured { grid-column: span 1; }
+    .section-head { padding: 60px 24px 30px; }
+    .stats { padding: 40px 24px; flex-wrap: wrap; gap: 32px; }
+    .stat { border-right: none; padding: 0; min-width: 45%; }
+    .divider { margin: 0 24px; }
+    footer { padding: 40px 24px; flex-direction: column; gap: 32px; align-items: flex-start; }
+    .footer-links { align-items: flex-start; }
+    .footer-copy { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="logo-mark">
+    <div class="logo-bsm">BSM</div>
+    <div class="logo-sub">Enterpryzes</div>
+  </div>
+  <nav>
+    <a href="#properties">Properties</a>
+    <a href="#network">Network</a>
+    <a href="/cdn-cgi/l/email-protection#f39a9d959cb391809e969d87968183819a899680dd909c9e">Contact</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <p class="hero-label">BSM Enterpryzes — Digital Portfolio</p>
+  <h1 class="hero-title">
+    <span>Digital</span>
+    <em class="gold">Empire</em>
+    <span>Built.</span>
+  </h1>
+  <p class="hero-desc">
+    Six distinct digital properties spanning e-commerce, travel, grocery delivery, streaming, finance, and fashion — powered by a unified technology backbone.
+  </p>
+
+  <div class="hero-count">
+    <div class="num">06</div>
+    <div class="num-label">Active Properties</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STATS -->
+<section class="stats" id="network">
+  <div class="stat reveal">
+    <div class="stat-val">3.7M+</div>
+    <div class="stat-label">Indexed Products</div>
+  </div>
+  <div class="stat reveal" style="transition-delay:0.1s">
+    <div class="stat-val">3</div>
+    <div class="stat-label">Affiliate Networks</div>
+  </div>
+  <div class="stat reveal" style="transition-delay:0.2s">
+    <div class="stat-val">6</div>
+    <div class="stat-label">Live Platforms</div>
+  </div>
+  <div class="stat reveal" style="transition-delay:0.3s">
+    <div class="stat-val">CF</div>
+    <div class="stat-label">Powered Stack</div>
+  </div>
+</section>
+
+<!-- PROPERTIES -->
+<section id="properties">
+  <div class="section-head reveal">
+    <span class="section-label">Portfolio Properties</span>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="properties">
+
+    <!-- Shoppizzy — featured -->
+    <a class="prop-card featured reveal" href="https://shoppizzy.com" target="_blank" rel="noopener">
+      <div class="prop-num">01 / 06</div>
+      <span class="prop-icon">🛍</span>
+      <div class="prop-name">Shoppi<span class="accent">zzy</span></div>
+      <div class="prop-url">shoppizzy.com</div>
+      <div class="prop-desc">Affiliate marketplace aggregating 3.7M+ products across CJ, Rakuten, and Impact networks. Smart category filtering, curated merchant discovery, and AI Tools catalog built for scalable commission revenue.</div>
+      <span class="prop-tag">Affiliate Marketplace</span>
+      <div class="prop-arrow">↗</div>
+    </a>
+
+    <!-- TravylWay -->
+    <a class="prop-card reveal" href="https://travylway.com" target="_blank" rel="noopener">
+      <div class="prop-num">02 / 06</div>
+      <span class="prop-icon">✈</span>
+      <div class="prop-name">Travyl<span class="accent">Way</span></div>
+      <div class="prop-url">travylway.com</div>
+      <div class="prop-desc">Airport & local rideshare platform with three service tiers — CREW, GENERAL, and LOCAL. WhatsApp automation, Mapbox routing, and Square/PayPal payments.</div>
+      <span class="prop-tag">Rideshare Platform</span>
+      <div class="prop-arrow">↗</div>
+    </a>
+
+    <!-- Growceryworld -->
+    <a class="prop-card reveal" href="https://growceryworld.com" target="_blank" rel="noopener">
+      <div class="prop-num">03 / 06</div>
+      <span class="prop-icon">🛒</span>
+      <div class="prop-name">Growcery<span class="accent">World</span></div>
+      <div class="prop-url">growceryworld.com</div>
+      <div class="prop-desc">Online grocery shopping platform serving seniors and low-mobility customers. Growceryworld LLC, Colorado-based, built for accessible, convenient, and dependable everyday shopping.</div>
+      <span class="prop-tag">Grocery Delivery</span>
+      <div class="prop-arrow">↗</div>
+    </a>
+
+    <!-- Modern Pulse -->
+    <a class="prop-card reveal" href="https://modyrnpulse.com" target="_blank" rel="noopener">
+      <div class="prop-num">04 / 06</div>
+      <span class="prop-icon">📡</span>
+      <div class="prop-name">Modyrn<span class="accent">Pulse</span></div>
+      <div class="prop-url">modyrnpulse.com</div>
+      <div class="prop-desc">Self-hosted streaming and content platform built on Cloudflare Stream. Tiered access (free / paid / referral), AI-assisted content production, and embedded affiliate revenue.</div>
+      <span class="prop-tag">Streaming & Content</span>
+      <div class="prop-arrow">↗</div>
+    </a>
+
+    <!-- BSM Stocks -->
+    <a class="prop-card reveal" href="https://bsmstocks.com" target="_blank" rel="noopener">
+      <div class="prop-num">05 / 06</div>
+      <span class="prop-icon">📈</span>
+      <div class="prop-name">BSM <span class="accent">Stocks</span></div>
+      <div class="prop-url">bsmstocks.com</div>
+      <div class="prop-desc">Financial platform under the BSM Enterpryzes umbrella. Market intelligence, investment resources, and financial content tailored for independent investors.</div>
+      <span class="prop-tag">Finance & Markets</span>
+      <div class="prop-arrow">↗</div>
+    </a>
+
+    <!-- cKool n saSSii -->
+    <a class="prop-card reveal" href="https://ckoolsassii.biz" target="_blank" rel="noopener">
+      <div class="prop-num">06 / 06</div>
+      <span class="prop-icon">⚓</span>
+      <div class="prop-name">cKool <span class="accent">n saSSii</span></div>
+      <div class="prop-url">ckoolsassii.biz</div>
+      <div class="prop-desc">Nautical fashion e-commerce brand with Anchor, Helm, Classic, and Sport collections. Square API integration, navy/gold design, and a College Color Series — a BSM Enterpryzes original.</div>
+      <span class="prop-tag">Fashion & E-Commerce</span>
+      <div class="prop-arrow">↗</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">BSM</div>
+    <div class="footer-sub">Enterpryzes — Est. Colorado</div>
+    <div class="footer-copy">© 2026 BSM Enterpryzes. All rights reserved.</div>
+  </div>
+  <div>
+    <div class="footer-links">
+      <a href="https://shoppizzy.com" target="_blank">shoppizzy.com</a>
+      <a href="https://travylway.com" target="_blank">travylway.com</a>
+      <a href="https://growceryworld.com" target="_blank">growceryworld.com</a>
+      <a href="https://modyrnpulse.com" target="_blank">modyrnpulse.com</a>
+      <a href="https://bsmstocks.com" target="_blank">bsmstocks.com</a>
+      <a href="https://ckoolsassii.biz" target="_blank">ckoolsassii.biz</a>
+    </div>
+    <div class="footer-copy">Powered by Cloudflare · D1 · Pages · Workers</div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+
+  // Header scroll
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.a

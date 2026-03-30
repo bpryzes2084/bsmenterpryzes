@@ -422,21 +422,120 @@ footer {
 }
 
 /* ── RESPONSIVE ── */
+/* ── HAMBURGER ── */
+.hamburger {
+  display:none; flex-direction:column; gap:5px;
+  cursor:pointer; padding:8px; background:none; border:none;
+}
+.hamburger span {
+  display:block; width:22px; height:2px;
+  background:var(--bio1); transition:all .3s;
+  box-shadow:0 0 6px var(--bio1);
+}
+.mobile-nav {
+  display:none; position:fixed; top:52px; left:0; right:0;
+  background:rgba(2,8,16,0.97); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--rule);
+  flex-direction:column; z-index:199;
+  padding:16px 0;
+}
+.mobile-nav.open { display:flex; }
+.mobile-nav a {
+  padding:14px 24px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--text2); text-decoration:none;
+  border-bottom:1px solid var(--rule);
+  transition:color .2s;
+}
+.mobile-nav a:last-child { border-bottom:none; }
+.mobile-nav a:hover { color:var(--bio1); }
+@media(max-width:960px){ .hamburger{ display:flex; } }
+@media(min-width:961px){ .mobile-nav{ display:none !important; } }
+
+/* ── NO CURSOR ON TOUCH ── */
+@media(hover:none){ .cur,.cur-ring{ display:none; } body{ cursor:auto; } }
 @media(max-width:960px){
-  header{ padding:0 24px; }
+  header{ padding:0 20px; height:56px; }
   nav{ display:none; }
-  .hero{ padding:100px 24px 60px; }
+  .logo-main{ font-size:1.1rem; }
+
+  .hero{ padding:80px 20px 48px; }
   .depth-rings{ display:none; }
+  .hero-coords{ font-size:0.55rem; letter-spacing:0.18em; }
+  .hero-h1{ font-size:clamp(2.4rem,9vw,5rem); }
+  .hero-desc{ font-size:0.88rem; }
   .hero-data{ flex-wrap:wrap; }
-  .sec-div{ padding:0 24px; }
-  .props-grid{ grid-template-columns:1fr; padding:32px 24px; }
+  .hero-datum{ padding:14px 20px; }
+  .datum-val{ font-size:1.4rem; }
+
+  .sec-div{ padding:0 20px; }
+
+  .props-grid{ grid-template-columns:1fr 1fr; padding:24px 20px; gap:12px; }
   .prop.wide{ grid-column:span 1; }
-  .index-bar{ margin:0 24px 40px; grid-template-columns:repeat(3,1fr); }
-  .qr-grid{ grid-template-columns:repeat(3,1fr); padding:0 24px 40px; }
-  .tech-panel{ margin:0 24px 40px; grid-template-columns:1fr; gap:24px; }
-  footer{ padding:40px 24px 28px; }
-  .footer-top{ grid-template-columns:1fr; gap:32px; }
-  .footer-bottom{ flex-direction:column; gap:8px; text-align:center; }
+  .prop-name{ font-size:1.2rem !important; }
+
+  .qr-grid{ grid-template-columns:repeat(3,1fr); padding:0 20px 32px; gap:12px; }
+  .qr-card{ padding:20px 10px 16px; }
+  .qr-canvas{ width:90px !important; height:90px !important; }
+
+  .tech-panel{ margin:0 20px 40px; grid-template-columns:1fr; gap:20px; }
+  .tech-heading{ font-size:1.2rem; }
+
+  footer{ padding:36px 20px 24px; }
+  .footer-top{ grid-template-columns:1fr; gap:28px; }
+  .footer-bottom{ flex-direction:column; gap:6px; text-align:center; }
+}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  header{ padding:0 16px; height:52px; }
+  .logo-main{ font-size:1rem; letter-spacing:0.1em; }
+  .logo-sub{ display:none; }
+
+  .hero{ padding:72px 16px 40px; }
+  .hero-coords{ font-size:0.5rem; letter-spacing:0.1em; flex-wrap:wrap; line-height:1.8; }
+  .hero-h1{ font-size:clamp(2rem,12vw,3.2rem); }
+  .hero-desc{ font-size:0.84rem; margin-top:20px; }
+  .hero-data{ flex-direction:column; gap:0; width:100%; }
+  .hero-datum{ padding:12px 16px; border-right:none; border-bottom:1px solid var(--rule); display:flex; align-items:center; justify-content:space-between; }
+  .datum-val{ font-size:1.5rem; }
+  .datum-lbl{ font-size:0.5rem; }
+
+  .sec-div{ padding:0 16px; height:44px; }
+  .sec-div-label{ font-size:0.55rem; letter-spacing:0.2em; }
+  .sec-div-num{ display:none; }
+
+  .props-grid{ grid-template-columns:1fr; padding:16px 16px; gap:10px; }
+  .prop{ padding:24px 20px; }
+  .prop-icon{ font-size:1.5rem; }
+  .prop-name{ font-size:1.15rem !important; }
+  .prop-desc{ font-size:0.82rem; }
+  .prop-arrow{ display:none; }
+
+  .qr-grid{ grid-template-columns:repeat(2,1fr); padding:0 16px 28px; gap:10px; }
+  .qr-card{ padding:16px 8px 14px; }
+  .qr-canvas{ width:100px !important; height:100px !important; }
+  .qr-name{ font-size:0.72rem; }
+  .qr-url{ font-size:0.5rem; }
+
+  .tech-panel{ margin:0 16px 32px; padding:24px 20px; }
+  .tech-heading{ font-size:1.1rem; }
+  .tech-items{ gap:8px; }
+  .tech-item{ font-size:0.56rem; padding:6px 12px; }
+
+  footer{ padding:28px 16px 20px; }
+  .footer-brand{ font-size:1.3rem; }
+  .footer-desc{ font-size:0.8rem; }
+  .footer-col a{ font-size:0.78rem; }
+  .footer-copy{ font-size:0.54rem; }
+}
+
+/* ── SMALL MOBILE ── */
+@media(max-width:380px){
+  .hero-h1{ font-size:2rem; }
+  .qr-grid{ grid-template-columns:1fr 1fr; }
+  .props-grid{ gap:8px; }
 }
 </style>
 </head>
@@ -452,13 +551,17 @@ footer {
     <div class="logo-main">BSM Enterpryzes</div>
     <div class="logo-sub">Digital Properties &nbsp;·&nbsp; Est. 2024</div>
   </a>
-  <nav>
-    <a href="#properties">Properties</a>
-    <a href="#qr">Scan</a>
-    <a href="#tech">Technology</a>
-    <a href="mailto:admin@bsmenterpryzes.com">Contact</a>
-  </nav>
+  <button class="hamburger" id="ham" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#properties" onclick="closeMobileNav()">Properties</a>
+  <a href="#qr" onclick="closeMobileNav()">Scan &amp; Visit</a>
+  <a href="#tech" onclick="closeMobileNav()">Technology</a>
+  <a href="mailto:admin@bsmenterpryzes.com">Contact</a>
+</nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -734,6 +837,12 @@ for(let i=0;i<18;i++){
   `;
   document.body.appendChild(p);
 }
+
+// Hamburger menu
+const ham = document.getElementById('ham');
+const mobileNav = document.getElementById('mobileNav');
+ham.addEventListener('click', () => mobileNav.classList.toggle('open'));
+function closeMobileNav(){ mobileNav.classList.remove('open'); }
 
 // Cursor
 const cur=document.getElementById('cur');

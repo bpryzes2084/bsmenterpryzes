@@ -555,7 +555,6 @@ footer {
   .props-grid{ gap:8px; }
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -869,26 +868,19 @@ let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{ mx=e.clientX;my=e.clientY; cur.style.left=mx+'px';cur.style.top=my+'px'; });
 (function ar(){ rx+=(mx-rx)*.1;ry+=(my-ry)*.1; ring.style.left=rx+'px';ring.style.top=ry+'px'; requestAnimationFrame(ar); })();
 document.querySelectorAll('a,button').forEach(el=>{ el.addEventListener('mouseenter',()=>ring.classList.add('h')); el.addEventListener('mouseleave',()=>ring.classList.remove('h')); });
+document.querySelectorAll('a,button').forEach(el=>{ el.addEventListener('mouseenter',()=>ring.classList.add('h')); el.addEventListener('mouseleave',()=>ring.classList.remove('h')); });
 
-// QR Codes - Generate QR codes for each property
-document.querySelectorAll('.qr-canvas').forEach(canvas => {
-  const url = canvas.getAttribute('data-url');
-  const size = parseInt(canvas.getAttribute('width'));
-  
-  // Clear the canvas parent and create a container for QRCode.js
-  const parent = canvas.parentElement;
-  parent.innerHTML = '';
-  
-  // Create QR code using QRCode.js
-  new QRCode(parent, {
-    text: url,
-    width: size,
-    height: size,
-    colorDark: '#00e5ff',
-    colorLight: '#061224',
-    correctLevel: QRCode.CorrectLevel.H
-  });
+// QR Codes
+document.querySelectorAll('.qr-canvas').forEach(c=>{
+  const img=new Image(); const sz=parseInt(c.width);
+  img.crossOrigin='anonymous';
+  img.onload=()=>c.getContext('2d').drawImage(img,0,0,sz,sz);
+  img.src=`https://api.qrserver.com/v1/create-qr-code/?size=${sz}x${sz}&data=${encodeURIComponent(c.dataset.url)}&color=111111&bgcolor=ffffff&qzone=1`;
 });
+
+// Scroll reveal
+const io=new IntersectionObserver(entries=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible');io.unobserve(e.target); }}); },{threshold:.06});
+document.querySelectorAll('.reveal').forEach(r=>io.observe(r));
 </script>
 </body>
 </html>

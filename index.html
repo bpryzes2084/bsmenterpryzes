@@ -555,6 +555,7 @@ footer {
   .props-grid{ gap:8px; }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -869,15 +870,24 @@ document.addEventListener('mousemove',e=>{ mx=e.clientX;my=e.clientY; cur.style.
 (function ar(){ rx+=(mx-rx)*.1;ry+=(my-ry)*.1; ring.style.left=rx+'px';ring.style.top=ry+'px'; requestAnimationFrame(ar); })();
 document.querySelectorAll('a,button').forEach(el=>{ el.addEventListener('mouseenter',()=>ring.classList.add('h')); el.addEventListener('mouseleave',()=>ring.classList.remove('h')); });
 
-// QR Codes
-document.querySelectorAll('.qr-canvas').forEach(c=>{
-  const url = c.getAttribute('data-url');
-  const sz = parseInt(c.width);
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${sz}x${sz}&data=${encodeURIComponent(url)}&bgcolor=061224&color=00e5ff`;
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = () => c.getContext('2d').drawImage(img, 0, 0, sz, sz);
-  img.src = qrUrl;
+// QR Codes - Generate QR codes for each property
+document.querySelectorAll('.qr-canvas').forEach(canvas => {
+  const url = canvas.getAttribute('data-url');
+  const size = parseInt(canvas.getAttribute('width'));
+  
+  // Clear the canvas parent and create a container for QRCode.js
+  const parent = canvas.parentElement;
+  parent.innerHTML = '';
+  
+  // Create QR code using QRCode.js
+  new QRCode(parent, {
+    text: url,
+    width: size,
+    height: size,
+    colorDark: '#00e5ff',
+    colorLight: '#061224',
+    correctLevel: QRCode.CorrectLevel.H
+  });
 });
 </script>
 </body>
